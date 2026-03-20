@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useEffect } from "react"; // Nhớ import useEffect ở trên cùng file nhé
 import {
   Image,
   ScrollView,
@@ -51,6 +52,45 @@ function BottomMenu({ navigation, activeScreen }) {
   );
 }
 
+// --- SPLASH SCREEN ---
+function SplashScreen({ navigation }) {
+  // Tự động chuyển sang trang Home sau 3 giây (3000ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace("Home"); // Dùng replace để người dùng không bấm back lại màn hình này được
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
+  return (
+    <TouchableOpacity 
+      style={styles.splashContainer} 
+      activeOpacity={1} 
+      onPress={() => navigation.replace("Home")} // Cho phép ấn vào màn hình để vào Home luôn
+    >
+      {/* Nhớ đổi tên file ảnh dưới đây cho khớp với ảnh bạn đã lưu trong folder assets */}
+      <Image
+        source={require("./assets/Mask Group.png")} 
+        style={styles.splashImage}
+      />
+
+      <Text style={styles.splashTitle}>Scan, Pay & Enjoy!</Text>
+      
+      <Text style={styles.splashSubtitle}>
+        scan products you want to buy at your{"\n"}
+        favorite store and pay by your phone &{"\n"}
+        enjoy happy, friendly Shopping!
+      </Text>
+
+      {/* Dấu chấm điều hướng (Pagination dots) */}
+      <View style={styles.dotsContainer}>
+        <View style={styles.dot} />
+        <View style={styles.dot} />
+        <View style={[styles.dot, styles.activeDot]} />
+      </View>
+    </TouchableOpacity>
+  );
+}
 // --- HOME SCREEN ---
 function HomeScreen({ navigation }) {
   return (
@@ -421,7 +461,14 @@ function SuccessScreen() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Splash">
+        
+        {/* Thêm màn hình Splash vào Stack */}
+        <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Scan" component={ScanScreen} />
@@ -877,5 +924,46 @@ backButton:{
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700"
+  },
+  // --- STYLES SPLASH SCREEN ---
+  splashContainer: {
+    flex: 1,
+    backgroundColor: "#FFFAFA", // Màu nền hơi hồng nhạt/trắng giống ảnh
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  splashImage: {
+    width: 320,
+    height: 320,
+    resizeMode: "contain",
+    marginBottom: 40,
+  },
+  splashTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#333",
+    marginBottom: 20,
+  },
+  splashSubtitle: {
+    fontSize: 14,
+    color: "gray",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 20,
+  },
+  dotsContainer: {
+    flexDirection: "row",
+    marginTop: 60,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FAD4D4", // Màu hồng nhạt cho chấm chưa active
+    marginHorizontal: 5,
+  },
+  activeDot: {
+    backgroundColor: "#5568FE", // Màu xanh dương cho chấm active
   }
 });

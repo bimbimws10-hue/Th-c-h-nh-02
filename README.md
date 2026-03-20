@@ -4,6 +4,9 @@
 - Mã SV: 23810310430
 
 ## Hình ảnh kết quả chạy
+![alt text](image6.jpg)
+
+
 ![alt text](image1.jpg)
 
 
